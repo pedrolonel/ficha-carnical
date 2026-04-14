@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║         TEMPLATE — FICHA DE MONSTRO D&D                     ║
+  ║  Para criar uma nova ficha, edite apenas:                   ║
+  ║   1. A constante MONSTER no bloco <script>                  ║
+  ║   2. O bloco HTML marcado com "EDITAR AQUI"                 ║
+  ║   3. O <title> abaixo                                       ║
+  ║  O restante (CSS, funções JS, tabelas) não precisa mudar.   ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<title>Ficha — Carniçal (Ghoul)</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   VARIÁVEIS DE COR — não alterar
+   ══════════════════════════════════════════ */
+:root {
+  --parch:        #f5ead6;
+  --parch-mid:    #ede0c4;
+  --parch-dark:   #d9c9a8;
+  --ink:          #1c1209;
+  --ink-mid:      #3d2b10;
+  --ink-light:    #5e4422;
+  --divider:      #8c6e3f;
+  --panel:        #1a1208;
+  --panel-mid:    #221a0c;
+  --panel-light:  #2e2410;
+  --panel-border: #4a3820;
+  --panel-text:   #e8d9b8;
+  --panel-muted:  #8a7050;
+  --red:          #8c1a1a;
+  --red-mid:      #a52020;
+  --red-light:    #c0392b;
+  --red-glow:     rgba(140,26,26,0.15);
+  --gold:         #b8880c;
+  --gold-light:   #d4a832;
+  --gold-bg:      rgba(184,136,12,0.12);
+  --green:        #1e5c30;
+  --green-bg:     rgba(30,92,48,0.10);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #2a1e0e;
+  background-image:
+    repeating-linear-gradient(90deg,  transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px),
+    repeating-linear-gradient(180deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px);
+  min-height: 100vh;
+  padding: 32px 16px 48px;
+  font-family: 'Libre Baskerville', Georgia, serif;
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT — FOLHA
+   ══════════════════════════════════════════ */
+.sheet {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--parch);
+  border: 2px solid var(--divider);
+  border-radius: 3px;
+  box-shadow: 0 0 0 4px #2a1e0e, 0 0 0 6px var(--divider), 0 12px 48px rgba(0,0,0,0.7);
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════
+   CABEÇALHO (fundo claro)
+   ══════════════════════════════════════════ */
+.header {
+  background: var(--parch-mid);
+  border-bottom: 3px solid var(--red);
+  padding: 28px 28px 20px;
+  position: relative;
+}
+.header::before, .header::after {
+  content: '';
+  position: absolute;
+  width: 48px; height: 48px;
+  border-top: 2px solid var(--divider);
+  border-left: 2px solid var(--divider);
+  top: 10px; left: 10px;
+}
+.header::after {
+  border-top: none; border-left: none;
+  border-bottom: 2px solid var(--divider);
+  border-right: 2px solid var(--divider);
+  top: auto; left: auto;
+  bottom: 10px; right: 10px;
+}
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-name-block { flex: 1; }
+
+.monster-type {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+.monster-name {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(34px, 6vw, 52px);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.monster-desc {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-light);
+  line-height: 1.7;
+  border-left: 3px solid var(--red);
+  padding-left: 12px;
+  max-width: 440px;
+}
+
+/* Badge CR (canto superior direito) */
+.cr-block {
+  background: var(--panel);
+  border: 1.5px solid var(--panel-border);
+  border-radius: 3px;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 80px;
+}
+.cr-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--panel-muted);
+  display: block;
+  margin-bottom: 3px;
+}
+.cr-value {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold-light);
+  display: block;
+  line-height: 1;
+}
+.cr-xp {
+  font-size: 9px;
+  color: var(--panel-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+/* Faixa vermelha separadora */
+.red-stripe { background: var(--red); height: 4px; }
+
+/* ══════════════════════════════════════════
+   STATS PRINCIPAIS (CA / HP / Velocidade)
+   ══════════════════════════════════════════ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 2px solid var(--red);
+}
+.stat-cell {
+  padding: 18px 14px;
+  text-align: center;
+  border-right: 1px solid var(--parch-dark);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-cell.dark    { background: var(--panel); }
+.stat-cell.hp-cell { background: var(--parch-mid); }
+
+.stat-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.stat-cell.dark    .stat-label { color: var(--panel-muted); }
+.stat-cell.hp-cell .stat-label { color: var(--ink-light); }
+
+.stat-value {
+  font-family: 'Cinzel', serif;
+  font-size: 30px;
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+}
+.stat-cell.dark    .stat-value { color: var(--panel-text); }
+.stat-cell.hp-cell .stat-value { color: var(--red); }
+
+.stat-sub {
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+  font-style: italic;
+}
+.stat-cell.dark    .stat-sub { color: var(--panel-muted); }
+.stat-cell.hp-cell .stat-sub { color: var(--ink-light); }
+
+/* HP interativo */
+.hp-live {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.hp-num {
+  font-family: 'Cinzel', serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--red);
+  min-width: 36px;
+  text-align: center;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.hp-num.low      { color: #d4680a; }
+.hp-num.critical { color: var(--red-light); animation: blink 1s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.hp-btn {
+  width: 24px; height: 24px;
+  border: 1px solid var(--parch-dark);
+  background: transparent;
+  color: var(--ink-light);
+  cursor: pointer;
+  font-size: 16px;
+  font-family: serif;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+  line-height: 1;
+}
+.hp-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-glow); }
+
+/* ══════════════════════════════════════════
+   SEÇÕES (fundo claro)
+   ══════════════════════════════════════════ */
+.section {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--parch-dark);
+}
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.25;
+}
+
+/* ══════════════════════════════════════════
+   ATRIBUTOS (6 células escuras)
+   ══════════════════════════════════════════ */
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.attr-cell {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 3px;
+  padding: 10px 4px 8px;
+  text-align: center;
+}
+.attr-name {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--panel-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+.attr-mod {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+  color: var(--panel-text);
+}
+.attr-mod.positive { color: #5dbf7a; }
+.attr-mod.negative { color: #e06060; }
+
+/* ══════════════════════════════════════════
+   BADGES (proficiência, sentidos, imunidades)
+   ══════════════════════════════════════════ */
+.extras-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.extra-card {
+  background: var(--parch-mid);
+  border: 1px solid var(--parch-dark);
+  border-radius: 3px;
+  padding: 10px 14px;
+}
+.extra-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  display: block;
+  margin-bottom: 6px;
+}
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin: 2px 3px 0 0;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5px;
+}
+.badge-red   { background: var(--red-glow);  color: var(--red-mid); border: 1px solid rgba(140,26,26,0.3); }
+.badge-gold  { background: var(--gold-bg);   color: var(--gold);    border: 1px solid rgba(184,136,12,0.35); }
+.badge-green { background: var(--green-bg);  color: var(--green);   border: 1px solid rgba(30,92,48,0.3); }
+
+/* ══════════════════════════════════════════
+   PAINÉIS ESCUROS (ataques e habilidades)
+   ══════════════════════════════════════════ */
+.dark-section {
+  background: var(--panel);
+  border-top: 1px solid var(--panel-border);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 18px 24px;
+}
+.dark-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red-mid);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dark-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--panel-border);
+}
+
+/* Card de ataque (borda vermelha à esq.) */
+.attack-card {
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--red);
+  border-radius: 2px;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: start;
+  background: var(--panel-mid);
+  margin-bottom: 10px; /* espaço entre múltiplos ataques */
+}
+.attack-card:last-child { margin-bottom: 0; }
+
+.attack-name {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--panel-text);
+  margin-bottom: 4px;
+}
+.attack-meta {
+  font-size: 13px;
+  color: var(--panel-muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+.attack-result {
+  font-size: 14px;
+  color: var(--gold-light);
+  font-style: italic;
+  min-height: 20px;
+  transition: all 0.2s;
+}
+
+/* Card de habilidade especial (borda dourada à esq.) */
+.special-card {
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--gold);
+  border-radius: 2px;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: start;
+  background: var(--panel-mid);
+  margin-bottom: 10px;
+}
+.special-card:last-child { margin-bottom: 0; }
+
+.special-name {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+}
+.special-desc {
+  font-size: 13px;
+  color: var(--panel-muted);
+  line-height: 1.65;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.special-desc strong { color: var(--panel-text); font-style: normal; }
+.special-result {
+  font-size: 13px;
+  color: var(--gold-light);
+  font-style: italic;
+  min-height: 20px;
+  margin-top: 6px;
+  transition: all 0.2s;
+}
+
+/* ══════════════════════════════════════════
+   BOTÕES
+   ══════════════════════════════════════════ */
+.btn-group { display: flex; flex-direction: column; gap: 7px; }
+
+.btn {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.14s;
+  display: flex; align-items: center; gap: 5px;
+}
+.btn-red  { background: var(--red);  border: 1px solid #5a0a0a; color: #fde8e8; }
+.btn-red:hover  { background: var(--red-mid); }
+.btn-dark { background: transparent; border: 1px solid var(--panel-border); color: var(--panel-text); }
+.btn-dark:hover { border-color: var(--panel-text); background: var(--panel-light); }
+.btn-gold { background: rgba(184,136,12,0.15); border: 1px solid var(--gold); color: var(--gold-light); }
+.btn-gold:hover { background: rgba(184,136,12,0.28); }
+
+/* ══════════════════════════════════════════
+   LOOT (fundo claro)
+   ══════════════════════════════════════════ */
+.loot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--parch-dark);
+}
+.loot-row:last-child { border-bottom: none; }
+.loot-dice {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold);
+  background: var(--gold-bg);
+  border: 1px solid rgba(184,136,12,0.3);
+  padding: 2px 8px;
+  border-radius: 2px;
+  min-width: 48px;
+  text-align: center;
+}
+.loot-name {
+  font-size: 14px;
+  color: var(--ink-mid);
+  font-style: italic;
+  flex: 1;
+}
+.loot-result {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--red);
+  max-width: 260px;
+  text-align: left;
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════════
+   LOG DE ROLAGENS (barra inferior fixa)
+   ══════════════════════════════════════════ */
+.log-bar {
+  background: var(--panel);
+  border-top: 3px solid var(--red);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.log-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--panel-muted);
+  white-space: nowrap;
+}
+.log-entries {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.log-entry {
+  font-size: 13px;
+  color: var(--panel-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: italic;
+  transition: color 0.3s;
+}
+.log-entry.fresh      { color: var(--panel-text); font-size: 14px; }
+.log-entry.fresh.warn { color: #e67e22; }
+.log-entry.fresh.gold { color: var(--gold-light); }
+.log-big {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold-light);
+  min-width: 52px;
+  text-align: right;
+}
+@keyframes pop {
+  0%  { transform: scale(0.5); opacity: 0.2; }
+  65% { transform: scale(1.18); }
+  100%{ transform: scale(1);   opacity: 1; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVO
+   ══════════════════════════════════════════ */
+@media (max-width: 500px) {
+  .attr-grid                      { grid-template-columns: repeat(3, 1fr); }
+  .extras-grid                    { grid-template-columns: 1fr; }
+  .attack-card, .special-card     { grid-template-columns: 1fr; }
+  .stats-row                      { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ① — CABEÇALHO
+       • monster-type : categoria / tamanho / alinhamento
+       • monster-name : nome do monstro
+       • monster-desc : descrição em itálico
+       • cr-value     : challenge rating (ex: ½, 1, 5)
+       • cr-xp        : XP concedido
+  ══════════════════════════════════════════ -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-name-block">
+        <div class="monster-type">Morto-Vivo · Médio · Caótico e Maligno</div>
+        <h1 class="monster-name">Carniçal</h1>
+        <p class="monster-desc">
+          Morto-vivo caótico e babante, com pele pálida, dentes afiados
+          e dedos longos e ensanguentados — sempre faminto por carne viva.
+        </p>
+      </div>
+      <div class="cr-block">
+        <span class="cr-label">CR</span>
+        <span class="cr-value">1</span>
+        <span class="cr-xp">200 XP</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="red-stripe"></div>
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ② — STATS PRINCIPAIS
+       • CA  : valor + tipo de armadura
+       • HP  : id="hpCurrent" e id="hpMax" devem
+               coincidir com MONSTER.hp no JS
+       • Vel : velocidade em metros
+  ══════════════════════════════════════════ -->
+  <div class="stats-row">
+
+    <div class="stat-cell dark">
+      <span class="stat-label">Classe de Armadura</span>
+      <span class="stat-value">12</span>
+      <span class="stat-sub">Agilidade natural</span>
+    </div>
+
+    <div class="stat-cell hp-cell">
+      <span class="stat-label">Pontos de Vida</span>
+      <div class="hp-live">
+        <button class="hp-btn" onclick="changeHP(-1)" title="Sofrer dano">−</button>
+        <span class="hp-num" id="hpCurrent">15</span>
+        <button class="hp-btn" onclick="changeHP(+1)" title="Cura">+</button>
+      </div>
+      <span class="stat-sub">/ <span id="hpMax">15</span> · 3d8</span>
+    </div>
+
+    <div class="stat-cell dark">
+      <span class="stat-label">Velocidade</span>
+      <span class="stat-value">9m</span>
+      <span class="stat-sub">30 pés</span>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ③ — ATRIBUTOS
+       Preenchido automaticamente pelo JS via
+       MONSTER.attributes — edite lá.
+  ══════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Atributos</div>
+    <div class="attr-grid" id="attrGrid"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ④ — CARACTERÍSTICAS
+       Adicione / remova badges conforme o monstro.
+       Classes disponíveis: badge-red, badge-gold, badge-green
+  ══════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Características</div>
+    <div class="extras-grid">
+
+      <div class="extra-card">
+        <span class="extra-label">Bônus de Proficiência</span>
+        <span class="badge badge-green">+2 Furtividade</span>
+      </div>
+
+      <div class="extra-card">
+        <span class="extra-label">Sentidos</span>
+        <span class="badge badge-gold">Visão no Escuro 18m</span>
+      </div>
+
+      <div class="extra-card" style="grid-column:1/-1">
+        <span class="extra-label">Imunidades</span>
+        <span class="badge badge-red">Veneno</span>
+        <span class="badge badge-red">Envenenado</span>
+        <span class="badge badge-red">Exaustão</span>
+      </div>
+
+      <!-- Resistências (descomente se necessário):
+      <div class="extra-card" style="grid-column:1/-1">
+        <span class="extra-label">Resistências</span>
+        <span class="badge badge-gold">Fogo</span>
+        <span class="badge badge-gold">Frio</span>
+      </div>
+      -->
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ⑤ — ATAQUES
+       • Cada .attack-card é um ataque separado.
+       • rollAttack() e rollDamage() lêem MONSTER.attack no JS.
+       • Para múltiplos ataques, duplique o .attack-card
+         e crie funções rollAttack2() / rollDamage2() no JS.
+  ══════════════════════════════════════════ -->
+  <div class="dark-section">
+    <div class="dark-section-title">Ataques</div>
+
+    <!-- DENTES / GARRAS — Ação -->
+    <div class="attack-card">
+      <div>
+        <div class="attack-name">
+          Dentes / Garras
+          <span style="font-size:10px;color:var(--panel-muted);font-weight:400;margin-left:6px">Ação</span>
+        </div>
+        <div class="attack-meta">
+          Ataque corpo a corpo · alcance 1,5m · um alvo<br>
+          Bônus de ataque: <strong style="color:var(--panel-text)">+4</strong> ·
+          Dano: <strong style="color:var(--panel-text)">1d6+2</strong> (perfuração/corte)
+        </div>
+        <div class="attack-result" id="attackResult">Aguardando rolagem…</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-red"  onclick="rollAttack()">⚔ Rolar Ataque</button>
+        <button class="btn btn-dark" onclick="rollDamage()">Rolar Dano</button>
+      </div>
+    </div>
+
+    <!-- CAPTURA — Ação (requer 3 aliados adjacentes) -->
+    <div class="attack-card">
+      <div>
+        <div class="attack-name">
+          Captura
+          <span style="font-size:10px;color:var(--panel-muted);font-weight:400;margin-left:6px">Ação · 3+ carniçais</span>
+        </div>
+        <div class="attack-meta">
+          Alvo adjacente · CD 18 · Teste de resistência<br>
+          <strong style="color:var(--panel-text)">Falha:</strong> 4d6 de dano + <em>agarrado</em> ·
+          <strong style="color:var(--panel-text)">Sucesso:</strong> metade do dano, sem condição
+        </div>
+        <div class="attack-result" id="capturaResult">Aguardando rolagem…</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-red"  onclick="rollCaptura()">Rolar Dano (4d6)</button>
+        <button class="btn btn-dark" onclick="rollCapturaHalf()">Metade (sucesso)</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ⑥ — HABILIDADES ESPECIAIS
+       • Cada .special-card é uma habilidade.
+       • Para habilidades sem botão, remova .btn-group.
+       • Para habilidades com uso limitado (1/dia),
+         use o padrão fortUsed + resetFortitude().
+  ══════════════════════════════════════════ -->
+  <div class="dark-section" style="border-top:none">
+    <div class="dark-section-title">Habilidades Especiais</div>
+
+    <!-- ARRANHÃO PARALISANTE — Ação Bônus -->
+    <div class="special-card">
+      <div>
+        <div class="special-name">
+          Arranhão Paralisante
+          <span style="font-size:11px;color:var(--panel-muted);font-weight:400"> (Ação Bônus)</span>
+        </div>
+        <div class="special-desc">
+          Alvo não-élfico atingido pelas garras faz um teste de resistência de
+          <strong>CON CD 10</strong>.
+          Falha: fica <strong>paralisado</strong> por <strong>1d4 rodadas</strong>.
+          O alvo repete o teste ao final de cada turno — um sucesso encerra a condição.
+          <em>Elfos são imunes a esse efeito.</em>
+        </div>
+        <div class="special-result" id="paralyResult">Aguardando rolagem…</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-gold" onclick="rollParaly()">Rolar CON CD 10</button>
+        <button class="btn btn-dark" onclick="rollParalyDur()" style="font-size:10px">Duração (1d4)</button>
+      </div>
+    </div>
+
+    <!-- FARO DE CADÁVER — passiva informativa -->
+    <div class="special-card" style="grid-template-columns:1fr">
+      <div>
+        <div class="special-name">Instinto de Bando</div>
+        <div class="special-desc">
+          O carniçal ganha vantagem em ataques contra uma criatura
+          se pelo menos um aliado adjacente ao alvo não estiver incapacitado.
+          A habilidade <strong>Captura</strong> exige ao menos
+          <strong>3 outros carniçais</strong> adjacentes ao alvo.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       EDITAR AQUI ⑦ — SAQUE
+       Preenchido automaticamente pelo JS via
+       MONSTER.loot — edite lá.
+       Tipos disponíveis: "copper", "trinket", "junk", "simple"
+  ══════════════════════════════════════════ -->
+  <div class="section" style="border-bottom:none">
+    <div class="section-title">Saque ao Derrotar</div>
+    <div id="lootList"></div>
+    <!-- Itens fixos (sem rolagem) -->
+    <div class="loot-row" style="margin-top:4px">
+      <span class="loot-dice" style="background:rgba(140,26,26,0.1);color:var(--red);border-color:rgba(140,26,26,0.3)">1×</span>
+      <span class="loot-name">Veneno de Paralisia (frasco)</span>
+      <span class="loot-result" style="color:var(--panel-muted);font-style:italic;font-size:12px">item fixo</span>
+    </div>
+    <div class="loot-row" style="border-bottom:none">
+      <span class="loot-dice" style="background:var(--green-bg);color:var(--green);border-color:rgba(30,92,48,0.3)">1×</span>
+      <span class="loot-name">Cura de Paralisia (frasco)</span>
+      <span class="loot-result" style="color:var(--panel-muted);font-style:italic;font-size:12px">item fixo</span>
+    </div>
+  </div>
+
+  <!-- LOG — não alterar -->
+  <div class="log-bar">
+    <div class="log-label">Última rolagem</div>
+    <div class="log-entries">
+      <div class="log-entry fresh" id="logLatest">Aguardando rolagem…</div>
+      <div class="log-entry"       id="logPrev"></div>
+    </div>
+    <div class="log-big" id="logBig">—</div>
+  </div>
+
+</div><!-- /sheet -->
+
+<script>
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  EDITAR AQUI — OBJETO MONSTER                               ║
+   ║  Todos os dados do monstro ficam aqui.                      ║
+   ╚══════════════════════════════════════════════════════════════╝
+
+   CAMPOS:
+   ┌─ hp           : pontos de vida máximos (número)
+   ├─ attributes   : array com { abbr, mod } para cada atributo
+   ├─ attack       : { bonus, damageDice, damageBonus }
+   └─ loot         : array de itens de saque
+        ├─ dice    : expressão de dados (ex: "1d4")
+        ├─ name    : nome exibido na ficha
+        └─ type    : "copper"  → moedas simples
+                     "trinket" → tabela de bugigangas (d100)
+                     "junk"    → tabela de sucata (d100)
+                     "simple"  → rola o dado e exibe o número
+
+   Nota: atualize também o HTML (stats, badges) conforme necessário.
+*/
+const MONSTER = {
+  hp: 15,
+
+  attributes: [
+    { abbr: "FOR", mod: "0"  },
+    { abbr: "DES", mod: "+2" },
+    { abbr: "CON", mod: "0"  },
+    { abbr: "INT", mod: "−2" },
+    { abbr: "SAB", mod: "0"  },
+    { abbr: "CAR", mod: "−2" }
+  ],
+
+  /* Dentes/Garras — ataque principal */
+  attack: {
+    bonus:       4,
+    damageDice:  "1d6",
+    damageBonus: 2
+  },
+
+  /* Captura — 4d6 de dano, sem rolagem de ataque */
+  captura: {
+    damageDice: "4d6",
+    cd: 18
+  },
+
+  /* Arranhão Paralisante — salvaguarda CON CD 10, duração 1d4 rodadas */
+  paraly: {
+    cd: 10,
+    durDice: "1d4"
+  },
+
+  /* Loot: itens fixos são exibidos diretamente no HTML; sem entrada aqui */
+  loot: []
+};
+
+/* ══════════════════════════════════════════════════════════════
+   TABELA DE BUGIGANGAS (d100) — não alterar
+   ══════════════════════════════════════════════════════════════ */
+const TRINKETS = [
+  "Uma mão mumificada de goblin",
+  "Um pedaço de cristal que brilha levemente à luz da lua",
+  "Uma moeda de ouro cunhada em uma terra desconhecida",
+  "Um diário escrito em uma língua que você não conhece",
+  "Um anel de latão que nunca enferruja",
+  "Uma peça de xadrez antiga feita de vidro",
+  "Um par de dados de ossos dos dedos, cada um com um símbolo de caveira no lugar do seis",
+  "Um pequeno ídolo representando uma criatura pesadelesca que causa sonhos perturbadores",
+  "Um colar de corda com quatro dedos de elfo mumificados pendurados",
+  "A escritura de um terreno em um reino desconhecido para você",
+  "Um bloco de 1 onça feito de um material desconhecido",
+  "Uma pequena boneca de pano perfurada com agulhas",
+  "Um dente de uma besta desconhecida",
+  "Uma escama enorme, talvez de um dragão",
+  "Uma pena verde brilhante",
+  "Uma antiga carta de adivinhação com sua própria imagem",
+  "Uma esfera de vidro cheia de fumaça em movimento",
+  "Um ovo de 1 libra com casca vermelha brilhante",
+  "Um cachimbo que solta bolhas",
+  "Um frasco de vidro contendo um pedaço estranho de carne em conserva",
+  "Uma pequena caixa de música feita por gnomos que toca uma canção vagamente familiar",
+  "Uma pequena estatueta de madeira de um halfling presunçoso",
+  "Uma esfera de latão gravada com runas estranhas",
+  "Um disco de pedra multicolorido",
+  "Um pequeno ícone de prata de um corvo",
+  "Uma bolsa com quarenta e sete dentes humanoides, um deles podre",
+  "Um fragmento de obsidiana que está sempre quente ao toque",
+  "Uma garra óssea de dragão presa a um colar simples de couro",
+  "Um par de meias velhas",
+  "Um livro em branco cujas páginas não retêm tinta, giz, grafite ou qualquer substância",
+  "Um distintivo de prata em forma de estrela de cinco pontas",
+  "Uma faca que pertenceu a um parente",
+  "Um frasco de vidro cheio de unhas cortadas",
+  "Um dispositivo metálico retangular com duas taças que solta faíscas quando molhado",
+  "Uma luva branca com lantejoulas, do tamanho de um humano",
+  "Um colete com cem pequenos bolsos",
+  "Um pequeno bloco de pedra sem peso",
+  "Um pequeno retrato desenhado de um goblin",
+  "Um frasco de vidro vazio que cheira a perfume ao ser aberto",
+  "Uma gema que parece carvão para qualquer pessoa, exceto você",
+  "Um pedaço de tecido de um antigo estandarte",
+  "Uma insígnia de patente de um legionário perdido",
+  "Um pequeno sino de prata sem badalo",
+  "Um canário mecânico dentro de uma lâmpada feita por gnomos",
+  "Um pequeno baú esculpido para parecer ter muitos pés",
+  "Uma fada morta dentro de uma garrafa de vidro transparente",
+  "Uma lata de metal sem abertura que parece conter líquido, areia, aranhas ou vidro quebrado",
+  "Uma esfera de vidro com água contendo um peixe dourado mecânico",
+  "Uma colher de prata com um 'M' gravado no cabo",
+  "Um apito feito de madeira dourada",
+  "Um escaravelho morto do tamanho da sua mão",
+  "Dois soldados de brinquedo, um sem cabeça",
+  "Uma pequena caixa cheia de botões de vários tamanhos",
+  "Uma vela que não pode ser acesa",
+  "Uma pequena gaiola sem porta",
+  "Uma chave antiga",
+  "Um mapa do tesouro indecifrável",
+  "O cabo de uma espada quebrada",
+  "Um pé de coelho",
+  "Um olho de vidro",
+  "Um camafeu com a imagem de uma pessoa horrível",
+  "Um crânio de prata do tamanho de uma moeda",
+  "Uma máscara de alabastro",
+  "Um incenso preto pegajoso em forma de pirâmide com cheiro muito ruim",
+  "Um gorro de dormir que proporciona sonhos agradáveis",
+  "Um único estrepete feito de osso",
+  "Uma armação de monóculo de ouro sem lente",
+  "Um cubo de 1 polegada, cada lado de uma cor diferente",
+  "Um puxador de porta feito de cristal",
+  "Um pequeno pacote cheio de pó rosa",
+  "Um fragmento de uma bela canção escrito em notas musicais em dois pedaços de pergaminho",
+  "Um brinco de prata em forma de lágrima feito de uma lágrima real",
+  "A casca de um ovo pintada com cenas perturbadoras de sofrimento humano",
+  "Um leque que, ao ser aberto, mostra um gato dormindo",
+  "Um conjunto de flautas de osso",
+  "Um trevo de quatro folhas prensado dentro de um livro sobre etiqueta",
+  "Um pergaminho com o desenho de uma engenhoca mecânica complexa",
+  "Uma bainha ornamentada que não serve em nenhuma lâmina que você encontrou",
+  "Um convite para uma festa onde ocorreu um assassinato",
+  "Um pentáculo de bronze com a cabeça de um rato gravada no centro",
+  "Um lenço roxo bordado com o nome de um poderoso arquimago",
+  "Metade da planta de um templo, castelo ou outra estrutura",
+  "Um pedaço de tecido dobrado que se transforma em um chapéu elegante ao ser aberto",
+  "Um recibo de depósito em um banco de uma cidade distante",
+  "Um diário com sete páginas arrancadas",
+  "Uma caixa de rapé de prata vazia com a inscrição 'sonhos'",
+  "Um símbolo sagrado de ferro dedicado a um deus desconhecido",
+  "Um livro contando a ascensão e queda de um herói lendário, com o último capítulo faltando",
+  "Um frasco de sangue de dragão",
+  "Uma flecha antiga de design élfico",
+  "Uma agulha que nunca entorta",
+  "Um broche ornamentado de design anão",
+  "Uma garrafa de vinho vazia com rótulo bonito: 'The Wizard of Wines Winery, Red Dragon Crush, 331422-W'",
+  "Um mosaico com superfície vitrificada multicolorida",
+  "Um rato petrificado",
+  "Uma bandeira pirata preta com uma caveira de dragão e ossos cruzados",
+  "Um pequeno caranguejo ou aranha mecânica que se move quando não está sendo observado",
+  "Um pote de vidro com gordura rotulada 'Graxa de Grifo'",
+  "Uma caixa de madeira com fundo de cerâmica contendo um verme vivo com cabeça em cada extremidade",
+  "Uma urna metálica contendo as cinzas de um herói"
+];
+
+/* ══════════════════════════════════════════════════════════════
+   TABELA DE SUCATA (d100) — não alterar
+   Formato: [nome, dado_quantidade | null]
+   ══════════════════════════════════════════════════════════════ */
+const JUNK_TABLE = [
+  ["Punhado de velas quebradas","1d8"],["Panela de metal enferrujada",null],
+  ["Cacos de um jarro quebrado",null],["Balde de madeira mofado",null],
+  ["Pedaço de corda de 15 cm",null],["Saco de pregos enferrujados e tortos","3d20"],
+  ["Bolinhas de gude de vidro","1d8"],["Meias manchadas de sangue",null],
+  ["Livro encharcado",null],["Um crânio humano",null],
+  ["Anel de cobre barato",null],["Pedaços de giz quebrado","1d6"],
+  ["Colher enferrujada",null],["Uma única luva infantil",null],
+  ["Contas de vidro","1d100"],["Calças comidas por traças",null],
+  ["Cacos de um prato quebrado",null],["Tinteiro seco",null],
+  ["Chave quebrada",null],["Cadeira de madeira destruída",null],
+  ["Agulha de costura torta",null],["Garrafas quebradas","1d6"],
+  ["Pele de animal arruinada",null],["Pedaços de carvão","1d20"],
+  ["Espelho de mão quebrado",null],["Saco de estopa mofado",null],
+  ["Avental de couro manchado",null],["Garrafa de vinho estragado",null],
+  ["Ferraduras","1d4"],["Espada curta quebrada",null],
+  ["Pilha de fragmentos de ossos",null],["Diário muito queimado",null],
+  ["Pedaço de pergaminho em branco",null],["Chapéu cheio de buracos",null],
+  ["Bolsa com tabaco velho",null],["Flechas quebradas","1d10"],
+  ["Boneca de palha com penas pintadas",null],["Varinha quebrada em duas partes",null],
+  ["Concha torta (tipo colher grande)",null],["Cascas de besouro mortas","2d20"],
+  ["Caldeirão de ferro rachado",null],["Armadura acolchoada rasgada em pedaços",null],
+  ["Frasco de vidro vazio",null],["Barra de sabão",null],
+  ["Flores secas e esfarelando",null],["Restos de velas usadas","1d6"],
+  ["Aljava esmagada",null],["Chaleira de cobre amassada",null],
+  ["Bola de cera ressecada",null],["Raios de roda de carroça","1d8"],
+  ["Cabo de um machado",null],["Camisa de tecido áspero",null],
+  ["Osso de animal roído",null],["Cadeado enferrujado e travado",null],
+  ["Vários dentes humanos","1d4"],["Pergaminho com tinta derramada",null],
+  ["Penas mofadas","2d10"],["Estatueta de pedra quebrada",null],
+  ["Dedal manchado",null],["Feixe de gravetos","2d8"],
+  ["Uma única moeda de cobre",null],["Ponta de uma lâmina de faca",null],
+  ["Pedaços variados de corda","1d12"],["Cantil com um grande furo",null],
+  ["Cajado quebrado",null],["Pedaços de papel queimados",null],
+  ["Retalhos de tecido manchados","1d4"],["Bandagens ensanguentadas",null],
+  ["Dentes de animal","2d4"],["Saco furado",null],
+  ["Queijo estragado",null],["Boneca queimada",null],
+  ["Caneca de estanho lascada",null],["Corrente de cobre quebrada",null],
+  ["Dobradiça de porta enferrujada","1d4"],["Flauta de madeira rachada",null],
+  ["Esqueletos de ratos mortos",null],["Barra de metal torta",null],
+  ["Cachecol de lã mofado",null],["Trapos encharcados de óleo","2d6"],
+  ["Cachimbo de pedra rachado",null],["Maçaneta de porta amassada",null],
+  ["Rolha de garrafa",null],["Cálice de madeira rachado",null],
+  ["Fivelas de latão manchadas","1d6"],["Carne infestada de larvas",null],
+  ["Arco curto estilhaçado",null],["Máscara de madeira antiga",null],
+  ["Ampulheta quebrada",null],["Bolsa com pedras de rio","1d12"],
+  ["Tochas usadas","1d4"],["Orbe de vidro estilhaçado",null],
+  ["Lata de tinta seca",null],["Cinzel de metal sem fio",null],
+  ["Espada de madeira de brinquedo",null],["Lamparina vazando óleo",null],
+  ["Bota de couro gasta",null],["Pequeno pote de barro sem tampa",null],
+  ["Esteira de dormir úmida e mofada",null],["Pergaminho mágico de Golpe Verdadeiro",null]
+];
+
+/* ══════════════════════════════════════════════════════════════
+   ESTADO — não alterar
+   ══════════════════════════════════════════════════════════════ */
+let hpCurrent = MONSTER.hp;
+let fortUsed  = false;
+
+/* ══════════════════════════════════════════════════════════════
+   FUNÇÕES BASE — não alterar
+   ══════════════════════════════════════════════════════════════ */
+
+/* Rola qualquer expressão: "1d8", "2d6+3", "1d20", "5" */
+function rollDice(expr) {
+  expr = expr.toString().trim().toLowerCase();
+  const m = expr.match(/^(\d*)d(\d+)([+-]\d+)?$/);
+  if (!m) {
+    const flat = parseInt(expr, 10);
+    return { total: isNaN(flat) ? 0 : flat, detail: String(flat) };
+  }
+  const count = parseInt(m[1] || "1", 10);
+  const faces = parseInt(m[2], 10);
+  const bonus = parseInt(m[3] || "0", 10);
+  const rolls = [];
+  for (let i = 0; i < count; i++) rolls.push(Math.floor(Math.random() * faces) + 1);
+  const sum    = rolls.reduce((a, b) => a + b, 0) + bonus;
+  const bonStr = bonus === 0 ? "" : (bonus > 0 ? `+${bonus}` : `${bonus}`);
+  const detail = count === 1 ? `${rolls[0]}${bonStr}` : `[${rolls.join("+")}]${bonStr}`;
+  return { total: sum, detail };
+}
+
+/* Exibe resultado no log inferior */
+function pushLog(label, total, cls = "") {
+  const prev = document.getElementById("logLatest").textContent;
+  document.getElementById("logPrev").textContent = prev;
+  const el = document.getElementById("logLatest");
+  el.textContent = `${label}: ${total}`;
+  el.className   = "log-entry fresh" + (cls ? ` ${cls}` : "");
+  const big = document.getElementById("logBig");
+  big.textContent = total;
+  big.style.animation = "none";
+  void big.offsetWidth;
+  big.style.animation = "pop 0.25s ease";
+  big.style.color = cls === "warn" ? "#e67e22" : "var(--gold-light)";
+}
+
+/* HP */
+function renderHP() {
+  const el = document.getElementById("hpCurrent");
+  el.textContent = hpCurrent;
+  el.className = "hp-num" +
+    (hpCurrent <= 0 ? " critical" :
+     hpCurrent <= Math.floor(MONSTER.hp * 0.33) ? " critical" :
+     hpCurrent <= Math.floor(MONSTER.hp * 0.55) ? " low" : "");
+}
+
+function changeHP(delta) {
+  hpCurrent = Math.max(0, Math.min(MONSTER.hp, hpCurrent + delta));
+  renderHP();
+  if (hpCurrent === 0) pushLog("⚠ HP zerado", 0, "warn");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FUNÇÕES DE ATAQUE
+   Para adicionar um segundo ataque, copie rollAttack/rollDamage,
+   renomeie para rollAttack2/rollDamage2 e ajuste o elemento e
+   os dados conforme MONSTER.attack2.
+   ══════════════════════════════════════════════════════════════ */
+function rollAttack() {
+  const hit   = rollDice("1d20");
+  const total = hit.total + MONSTER.attack.bonus;
+  const crit  = hit.total === 20;
+  const miss  = hit.total === 1;
+  document.getElementById("attackResult").textContent =
+    `Acerto: ${total}${crit ? " ★ CRÍTICO!" : miss ? " ✗ FALHA!" : ""}`;
+  pushLog(`Ataque (d20=${hit.total}+${MONSTER.attack.bonus})`, total);
+}
+
+function rollDamage() {
+  const { damageDice, damageBonus } = MONSTER.attack;
+  const expr = `${damageDice}+${damageBonus}`;
+  const r    = rollDice(expr);
+  document.getElementById("attackResult").textContent = `Dano: ${r.total} (${r.detail})`;
+  pushLog(`Dano (${expr})`, r.total);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CAPTURA (Ação — requer 3+ carniçais adjacentes)
+   ══════════════════════════════════════════════════════════════ */
+function rollCaptura() {
+  const r = rollDice(MONSTER.captura.damageDice);
+  document.getElementById("capturaResult").textContent =
+    `Dano (falha): ${r.total} (${r.detail}) · CD ${MONSTER.captura.cd} · alvo fica Agarrado`;
+  pushLog(`Captura (${MONSTER.captura.damageDice})`, r.total);
+}
+
+function rollCapturaHalf() {
+  const r    = rollDice(MONSTER.captura.damageDice);
+  const half = Math.floor(r.total / 2);
+  document.getElementById("capturaResult").textContent =
+    `Dano (sucesso): ${half} (metade de ${r.total}) · sem condição`;
+  pushLog(`Captura - sucesso (${MONSTER.captura.damageDice}/2)`, half);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ARRANHÃO PARALISANTE (Ação Bônus)
+   ══════════════════════════════════════════════════════════════ */
+function rollParaly() {
+  const r     = rollDice("1d20");
+  const cd    = MONSTER.paraly.cd;
+  const succ  = r.total >= cd;
+  document.getElementById("paralyResult").textContent = succ
+    ? `CON ${r.total} ≥ CD ${cd} — Sucesso! Alvo resiste à paralisia.`
+    : `CON ${r.total} < CD ${cd} — Falha! Alvo fica Paralisado (rolar duração).`;
+  pushLog(`CON Save CD ${cd}`, r.total, succ ? "" : "warn");
+}
+
+function rollParalyDur() {
+  const r = rollDice(MONSTER.paraly.durDice);
+  document.getElementById("paralyResult").textContent =
+    `Duração da paralisia: ${r.total} rodada${r.total > 1 ? "s" : ""} (${MONSTER.paraly.durDice}=${r.detail})`;
+  pushLog(`Duração paralisia (${MONSTER.paraly.durDice})`, r.total, "gold");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LOOT — não alterar
+   ══════════════════════════════════════════════════════════════ */
+function rollTrinket(id) {
+  const roll = Math.floor(Math.random() * 100);
+  const item = TRINKETS[roll];
+  const el   = document.getElementById(id);
+  el.innerHTML   = `<span style="color:var(--gold);font-size:11px">#${roll+1}</span> ${item}`;
+  el.style.fontStyle = "italic";
+  el.style.color = "var(--ink-mid)";
+  pushLog(`Bugiganga #${roll+1}`, item.slice(0, 28) + "…", "gold");
+}
+
+function rollJunk(id) {
+  const roll = Math.floor(Math.random() * 100);
+  const [itemName, qtDice] = JUNK_TABLE[roll];
+  let label = itemName;
+  if (qtDice) {
+    const r = rollDice(qtDice);
+    label  += ` ×${r.total} (${qtDice}=${r.detail})`;
+  }
+  const el = document.getElementById(id);
+  el.innerHTML   = `<span style="color:var(--gold);font-size:11px">#${roll+1}</span> ${label}`;
+  el.style.fontStyle = "italic";
+  el.style.color = "var(--ink-mid)";
+  pushLog(`Sucata #${roll+1}`, itemName.slice(0, 28), "gold");
+}
+
+function rollLoot(dice, id, type) {
+  if (type === "trinket") { rollTrinket(id); return; }
+  if (type === "junk")    { rollJunk(id);    return; }
+  const r  = rollDice(dice);
+  const el = document.getElementById(id);
+  el.textContent     = type === "copper"
+    ? `${r.total} moeda${r.total !== 1 ? "s" : ""} (${r.detail})`
+    : `${r.total} (${r.detail})`;
+  el.style.fontStyle = "normal";
+  el.style.color     = "var(--red)";
+  pushLog(`Saque ${dice}`, r.total, "gold");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BUILDERS — não alterar
+   ══════════════════════════════════════════════════════════════ */
+function buildAttributes() {
+  const grid = document.getElementById("attrGrid");
+  MONSTER.attributes.forEach(attr => {
+    const isPos = attr.mod.startsWith("+") && attr.mod !== "+0";
+    const isNeg = attr.mod.startsWith("−") || attr.mod.startsWith("-");
+    const cls   = isPos ? "positive" : isNeg ? "negative" : "";
+    const cell  = document.createElement("div");
+    cell.className = "attr-cell";
+    cell.innerHTML = `<span class="attr-name">${attr.abbr}</span>
+                      <span class="attr-mod ${cls}">${attr.mod}</span>`;
+    grid.appendChild(cell);
+  });
+}
+
+function buildLoot() {
+  const list = document.getElementById("lootList");
+  MONSTER.loot.forEach((item, i) => {
+    const id  = `loot${i}`;
+    const row = document.createElement("div");
+    row.className = "loot-row";
+    row.innerHTML = `
+      <span class="loot-dice">${item.dice}</span>
+      <span class="loot-name">${item.name}</span>
+      <span class="loot-result" id="${id}">—</span>
+      <button class="btn btn-gold"
+        onclick="rollLoot('${item.dice}','${id}','${item.type}')">Rolar</button>`;
+    list.appendChild(row);
+  });
+}
+
+/* INIT */
+buildAttributes();
+buildLoot();
+renderHP();
+</script>
+</body>
+</html>
